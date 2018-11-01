@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {Component} from 'react';
+import axios from 'axios'
 
-const Contact = (props) => {
+class Contact extends Component {
 
     // console.log("props", props)
 
@@ -8,13 +9,48 @@ const Contact = (props) => {
     //     props.history.push('/about')
     // },2000);
 
-    return (
-        <div className="container">
-            <h4 className="center">Contact</h4>
-            <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
-        </div>
+    state = {
+        posts: []
+    }
 
-    )
+    componentDidMount = () => {
+      axios.get('https://jsonplaceholder.typicode.com/posts')
+      .then(res => {
+          this.setState({
+              posts: res.data
+          })
+      })
+    }
+    
+
+    render() {
+        const {posts} = this.state;
+
+        const postList = posts.length ? (
+            posts.map(post => {
+                return (
+                    <div className="post card" key={post.id}>
+                        <div className="card-content">
+                            <span className="card-title">{post.title}</span>
+                            <p>{post.body}</p>
+                        </div>
+                    </div>
+                )
+            })
+        ) : (
+            <div className="center">NO post found</div>
+        )
+
+
+
+        return (
+            <div className="container">
+                <h4 className="center">Contact</h4>
+                {postList}    
+            </div>
+    
+        )
+    }
 }
 
 export default Contact;
